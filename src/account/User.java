@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +23,7 @@ public class User {
     @Pattern(regexp = ".+@acme.com$")
     private String email;
     @NotEmpty
+    @Size(min = 12, message = "Password length must be 12 chars minimum!")
     private String password;
 
     private String role = "USER";

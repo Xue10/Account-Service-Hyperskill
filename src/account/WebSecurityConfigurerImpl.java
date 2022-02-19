@@ -21,7 +21,8 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .mvcMatchers("/api/signup").permitAll()
+                .mvcMatchers("/api/auth/signup").permitAll()
+                .mvcMatchers("/api/auth/changepass").hasRole("USER")
                 .mvcMatchers("/api/empl/payment").hasRole("USER")
                 .and()
                 .csrf().disable().headers().frameOptions().disable()
@@ -39,6 +40,6 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder getEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(13);
     }
 }
