@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/changepass")
-    public Changepass changepass( @RequestBody NewPassword passwordBody, @AuthenticationPrincipal UserDetails details) {
+    public Changepass changepass(@RequestBody NewPassword passwordBody, @AuthenticationPrincipal UserDetails details) {
         String oldPassword = details.getPassword();
         String newPassword = passwordBody.getNew_password();
         if (newPassword == null || newPassword.length() < 12) {
