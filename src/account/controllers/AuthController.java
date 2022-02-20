@@ -1,23 +1,22 @@
-package account;
+package account.controllers;
 
+import account.business.User;
+import account.business.UserOut;
+import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-@Validated
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -32,7 +31,7 @@ public class AuthController {
             "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
             "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember");
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/signup")
     public UserOut signup(@Valid @RequestBody User user) {
         if (users.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User exist!");
@@ -48,7 +47,7 @@ public class AuthController {
         return new UserOut(user);
     }
 
-    @PostMapping("/auth/changepass")
+    @PostMapping("/changepass")
     public Changepass changepass(@RequestBody NewPassword passwordBody, @AuthenticationPrincipal UserDetails details) {
         String oldPassword = details.getPassword();
         String newPassword = passwordBody.getNew_password();
@@ -68,42 +67,7 @@ public class AuthController {
         return new Changepass(email);
     }
 
-    @GetMapping("/empl/payment")
-    public UserOut get(@AuthenticationPrincipal UserDetails details) {
 
-        String email = details.getUsername();
-        User user = users.findByEmailIgnoreCase(email).get();
-        return new UserOut(user);
-    }
-}
-
-class UserOut {
-
-    private long id;
-    private String name;
-    private String lastname;
-    private String email;
-
-    public UserOut(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.lastname = user.getLastname();
-        this.email = user.getEmail();
-    }
-    public long getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }
 
 class NewPassword {
@@ -126,7 +90,7 @@ class Changepass {
     private String status = "The password has been updated successfully";
 
     public Changepass(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public String getEmail() {

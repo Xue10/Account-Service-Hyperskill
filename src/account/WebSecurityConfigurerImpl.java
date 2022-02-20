@@ -22,6 +22,7 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .mvcMatchers("/api/auth/signup").permitAll()
+                .mvcMatchers("/api/acct/payments").permitAll()
                 .mvcMatchers("/api/auth/changepass").hasRole("USER")
                 .mvcMatchers("/api/empl/payment").hasRole("USER")
                 .and()

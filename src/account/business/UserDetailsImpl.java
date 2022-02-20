@@ -1,16 +1,12 @@
-package account;
+package account.business;
+
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 
 public class UserDetailsImpl implements UserDetails {
@@ -20,7 +16,7 @@ public class UserDetailsImpl implements UserDetails {
     private final List<GrantedAuthority> roles = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
     public UserDetailsImpl(User user) {
-        this.email = user.getEmail().toLowerCase();
+        this.email = user.getEmail();
         this.password = user.getPassword();
     }
 

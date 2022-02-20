@@ -1,14 +1,12 @@
-package account;
+package account.business;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -27,6 +25,10 @@ public class User {
     private String password;
 
     private String role = "USER";
+
+    @OneToMany
+    @JoinColumn(name = "employee")
+    private List<Salary> salaries = new ArrayList<>();
 
     public User() {
     }
@@ -64,7 +66,7 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public String getPassword() {
@@ -87,5 +89,8 @@ public class User {
         this.role = role;
     }
 
+    public List<Salary> getSalaries() {
+        return salaries;
+    }
 
 }
