@@ -1,5 +1,7 @@
-package account.business;
+package account.business.service;
 
+import account.business.UserDetailsImpl;
+import account.business.data.User;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

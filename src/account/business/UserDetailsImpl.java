@@ -1,23 +1,30 @@
 package account.business;
 
 
+import account.business.data.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class UserDetailsImpl implements UserDetails {
     private final String email;
     private final String password;
-
-    private final List<GrantedAuthority> roles = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    private final Set<GrantedAuthority> roles;
 
     public UserDetailsImpl(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
+        Set<GrantedAuthority> userRoles = new HashSet<>();
+        Set<String> role = user.getRole();
+        for (String r : role) {
+            userRoles.add(new SimpleGrantedAuthority("ROLE_" + r));
+        }
+        this.roles = userRoles;
     }
 
     @Override

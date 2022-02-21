@@ -1,9 +1,9 @@
-package account.business;
+package account.business.response;
 
-public class UploadSuccess {
-    private String status = "Added successfully!";
+public class UpdateSuccess {
+    private String status = "Updated successfully!";
 
-    public UploadSuccess() {
+    public UpdateSuccess() {
     }
 
     public String getStatus() {

@@ -1,8 +1,7 @@
-package account.business;
+package account.business.data;
 
 import java.io.Serializable;
 import java.time.YearMonth;
-import java.util.Locale;
 import java.util.Objects;
 
 

@@ -1,7 +1,7 @@
-package account.controllers;
+package account.controller;
 
-import account.business.User;
-import account.business.UserOut;
+import account.business.data.User;
+import account.business.data.UserRoles;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,14 +26,13 @@ public class AuthController {
     @Autowired
     PasswordEncoder encoder;
 
-    long id = users == null ? 0 : users.count();
 
     List<String> breachedPasswords = List.of("PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril",
             "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
             "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember");
 
     @PostMapping("/signup")
-    public UserOut signup(@Valid @RequestBody User user) {
+    public UserRoles signup(@Valid @RequestBody User user) {
         if (users.findByEmailIgnoreCase(user.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User exist!");
         }
@@ -41,10 +41,12 @@ public class AuthController {
         if (breachedPasswords.contains(password)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password is in the hacker's database!");
         }
-        user.setId(++id);
         user.setPassword(encoder.encode(password));
+        if (users.count() == 0) {
+            user.setRole(Set.of("ADMINISTRATOR"));
+        }
         users.save(user);
-        return new UserOut(user);
+        return new UserRoles(user);
     }
 
     @PostMapping("/changepass")

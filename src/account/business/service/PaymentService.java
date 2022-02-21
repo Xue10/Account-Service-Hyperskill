@@ -1,5 +1,10 @@
-package account.business;
+package account.business.service;
 
+import account.business.data.Salary;
+import account.business.data.SalaryOut;
+import account.business.data.User;
+import account.business.response.UpdateSuccess;
+import account.business.response.UploadSuccess;
 import account.repository.SalaryRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +20,14 @@ import java.util.List;
 
 @Service
 @Transactional
-public class PaymentServices {
+public class PaymentService {
 
     private final SalaryRepository salaries;
 
     private final UserRepository users;
 
     @Autowired
-    public PaymentServices(SalaryRepository salaries, UserRepository users) {
+    public PaymentService(SalaryRepository salaries, UserRepository users) {
         this.salaries = salaries;
         this.users = users;
     }

@@ -1,7 +1,7 @@
 package account.repository;
 
-import account.business.Salary;
-import account.business.SalaryId;
+import account.business.data.Salary;
+import account.business.data.SalaryId;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.YearMonth;

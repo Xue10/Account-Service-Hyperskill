@@ -1,4 +1,4 @@
-package account.business;
+package account.business.data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
