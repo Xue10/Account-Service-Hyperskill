@@ -8,8 +8,10 @@ import account.repository.RoleGroupRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+//@Secured({"ROLE_ADMINISTRATOR"})
 @Transactional
 public class AdminService {
 
@@ -33,13 +36,13 @@ public class AdminService {
     public UserRoles changeRoles(RoleOperation roleOperation) {
         User user = findUser(roleOperation.getUser());
         String role = roleOperation.getRole().toUpperCase();
-        if (!groups.existsByName("RULE_" + role)) {
+        if (!groups.existsByName("ROLE_" + role)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!");
         }
         Set<String> roles = user.getRole();
         String operation = roleOperation.getOperation();
         if ("GRANT".equals(operation)) {
-            if (roles.contains("ADMINISTRATOR")) {
+            if (roles.contains("ADMINISTRATOR") || "ADMINISTRATOR".equals(role)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user cannot combine administrative and business roles!");
             }
             roles.add(role);
@@ -47,11 +50,11 @@ public class AdminService {
             if (!roles.contains(role)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not have a role!");
             }
-            if (roles.size() < 2) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user must have at least one role!");
-            }
             if ("ADMINISTRATOR".equals(role)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't remove ADMINISTRATOR role!");
+            }
+            if (roles.size() < 2) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user must have at least one role!");
             }
             roles.remove(role);
         }
@@ -68,7 +71,6 @@ public class AdminService {
         users.delete(user);
         return new DeleteSuccess(email);
     }
-
     public List<UserRoles> getAll() {
         List<UserRoles> list = new ArrayList<>();
         for (User user : users.findAll()) {

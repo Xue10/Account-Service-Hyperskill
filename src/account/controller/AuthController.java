@@ -44,9 +44,9 @@ public class AuthController {
         }
         user.setPassword(encoder.encode(password));
         if (users.count() == 0) {
-            user.setRole(new HashSet<>(Set.of("ADMINISTRATOR")));
+            user.getRole().add("ADMINISTRATOR");
         } else {
-            user.setRole(new HashSet<>(Set.of("USER")));
+            user.getRole().add("USER");
         }
         users.save(user);
         return new UserRoles(user);

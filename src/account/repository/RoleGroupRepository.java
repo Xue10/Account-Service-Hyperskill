@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoleGroupRepository extends CrudRepository<RoleGroup, Long> {
+public interface RoleGroupRepository extends CrudRepository<RoleGroup, String> {
     Optional<RoleGroup> findByName(String name);
     boolean existsByName(String name);
 }

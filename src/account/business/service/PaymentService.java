@@ -8,6 +8,7 @@ import account.business.response.UploadSuccess;
 import account.repository.SalaryRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,16 +35,21 @@ public class PaymentService {
 
 
     public UploadSuccess upload(List<Salary> salaryList) {
-        for (Salary s : salaryList) {
-            if (salaries.findByEmployeeAndPeriod(s.getEmployee().toLowerCase(), s.getPeriod()).isPresent()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-        }
+//        for (Salary s : salaryList) {
+//            if (salaries.findByEmployeeAndPeriod(s.getEmployee().toLowerCase(), s.getPeriod()).isPresent()
+//            || users.findByEmailIgnoreCase(s.getEmployee()).isEmpty()) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//            }
+//            salaries.save(s);
+//        }
         salaries.saveAll(salaryList);
         return new UploadSuccess();
     }
 
     public UpdateSuccess update(Salary salary) {
+        if (users.findByEmailIgnoreCase(salary.getEmployee()).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         salaries.save(salary);
         return new UpdateSuccess();
     }
@@ -66,16 +72,15 @@ public class PaymentService {
     }
 
     public SalaryOut get(String email, String period) {
-        DateTimeFormatter in = DateTimeFormatter.ofPattern("MM-uuuu");
-        YearMonth yearMonth = YearMonth.parse(period, in);
-        Salary salary = salaries.findByEmployeeAndPeriod(email, yearMonth).orElse(null);
+        Salary.checkPeriodFormat(period);
+        Salary salary = salaries.findByEmployeeAndPeriod(email, Salary.convertPeriod(period)).orElse(null);
         if (salary == null) {
             return null;
         }
         User user = users.findByEmailIgnoreCase(email).get();
         String name = user.getName();
         String lastname = user.getLastname();
-        return new SalaryOut(name, lastname, yearMonth, salary.getSalary());
+        return new SalaryOut(name, lastname, Salary.convertPeriod(period), salary.getSalary());
     }
 }
 

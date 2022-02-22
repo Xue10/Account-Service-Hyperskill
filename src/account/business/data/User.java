@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,12 +28,12 @@ public class User {
     @NotEmpty
     @Size(min = 12, message = "Password length must be 12 chars minimum!")
     private String password;
-    @ElementCollection
-    private Set<String> role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> role = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "user_email")
-    private List<Salary> salaries = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Set<Salary> salaries = new HashSet<>();
 
     public User() {
     }
@@ -92,11 +93,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Salary> getSalaries() {
+    public Set<Salary> getSalaries() {
         return salaries;
     }
 
-    public void setSalaries(List<Salary> salaries) {
+    public void setSalaries(Set<Salary> salaries) {
         this.salaries = salaries;
     }
 
