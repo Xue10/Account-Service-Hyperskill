@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,23 +27,12 @@ public class User {
     @NotEmpty
     @Size(min = 12, message = "Password length must be 12 chars minimum!")
     private String password;
-    @OneToMany
-    private Set<RoleGroup> role;
+    @ElementCollection
+    private Set<String> role;
 
     @OneToMany
     @JoinColumn(name = "user_email")
     private List<Salary> salaries = new ArrayList<>();
-
-//
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    })
-//    @JoinTable(name = "user_groups",
-//            joinColumns =@JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "group_id"
-//            ))
-//    private Set<Group> userGroups= new HashSet<>();
 
     public User() {
     }
@@ -57,7 +47,6 @@ public class User {
     public long getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
@@ -95,11 +84,11 @@ public class User {
         this.id = id;
     }
 
-    public Set<RoleGroup> getRole() {
+    public Set<String> getRole() {
         return role;
     }
 
-    public void setRole(Set<RoleGroup> role) {
+    public void setRole(Set<String> role) {
         this.role = role;
     }
 

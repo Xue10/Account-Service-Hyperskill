@@ -32,8 +32,8 @@ public class AdminService {
 
     public UserRoles changeRoles(RoleOperation roleOperation) {
         User user = findUser(roleOperation.getUser());
-        String role = "ROLE_" + roleOperation.getRole().toUpperCase();
-        if (!groups.existsByName(role)) {
+        String role = roleOperation.getRole().toUpperCase();
+        if (!groups.existsByName("RULE_" + role)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!");
         }
         Set<String> roles = user.getRole();

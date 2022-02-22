@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@Table
 @IdClass(SalaryId.class)
 public class Salary {
     @Id

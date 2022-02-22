@@ -3,22 +3,20 @@ package account.business.data;
 import javax.persistence.*;
 
 @Entity
+@Table
 public class RoleGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(unique = true)
-    private String roleName;
-
-//    @ManyToMany(mappedBy = "userGroups")
-//    private Set<User> users;
+    private String name;
 
     public RoleGroup() {
     }
 
-    public RoleGroup(String roleName) {
-        this.roleName = roleName;
+    public RoleGroup(String name) {
+        this.name = name;
     }
 
     public long getId() {
@@ -29,12 +27,12 @@ public class RoleGroup {
         this.id = id;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getName() {
+        return name;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setName(String name) {
+        this.name = name;
     }
 
 //    public Set<User> getUsers() {

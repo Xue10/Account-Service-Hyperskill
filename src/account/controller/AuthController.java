@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,9 @@ public class AuthController {
         }
         user.setPassword(encoder.encode(password));
         if (users.count() == 0) {
-            user.setRole(Set.of("ADMINISTRATOR"));
+            user.setRole(new HashSet<>(Set.of("ADMINISTRATOR")));
+        } else {
+            user.setRole(new HashSet<>(Set.of("USER")));
         }
         users.save(user);
         return new UserRoles(user);
