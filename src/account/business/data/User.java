@@ -31,9 +31,9 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false)
-    private Set<Salary> salaries = new HashSet<>();
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private Set<Salary> salaries = new HashSet<>();
 
     public User() {
     }
@@ -93,13 +93,13 @@ public class User {
         this.role = role;
     }
 
-    public Set<Salary> getSalaries() {
-        return salaries;
-    }
-
-    public void setSalaries(Set<Salary> salaries) {
-        this.salaries = salaries;
-    }
+//    public Set<Salary> getSalaries() {
+//        return salaries;
+//    }
+//
+//    public void setSalaries(Set<Salary> salaries) {
+//        this.salaries = salaries;
+//    }
 
 //    public Set<Group> getUserGroups() {
 //        return userGroups;

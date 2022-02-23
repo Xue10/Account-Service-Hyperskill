@@ -35,13 +35,12 @@ public class PaymentService {
 
 
     public UploadSuccess upload(List<Salary> salaryList) {
-//        for (Salary s : salaryList) {
-//            if (salaries.findByEmployeeAndPeriod(s.getEmployee().toLowerCase(), s.getPeriod()).isPresent()
-//            || users.findByEmailIgnoreCase(s.getEmployee()).isEmpty()) {
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//            }
-//            salaries.save(s);
-//        }
+        for (Salary s : salaryList) {
+            if (salaries.findByEmployeeAndPeriod(s.getEmployee().toLowerCase(), s.getPeriod()).isPresent()
+            || users.findByEmailIgnoreCase(s.getEmployee()).isEmpty() || s.getSalary() < 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
         salaries.saveAll(salaryList);
         return new UploadSuccess();
     }
