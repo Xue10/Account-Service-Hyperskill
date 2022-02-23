@@ -1,12 +1,12 @@
 package account.controller;
 
+import account.business.data.LockUnlock;
+import account.business.response.Status;
 import account.business.service.AdminService;
 import account.business.response.DeleteSuccess;
 import account.business.data.RoleOperation;
 import account.business.data.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +21,11 @@ public class AdminController {
     @PutMapping("/role")
     public UserRoles set(@RequestBody RoleOperation roleOperation) {
         return adminService.changeRoles(roleOperation);
+    }
+
+    @PutMapping("/access")
+    public Status lockUnlock(LockUnlock msg) {
+
     }
     
     @DeleteMapping("/{email}")

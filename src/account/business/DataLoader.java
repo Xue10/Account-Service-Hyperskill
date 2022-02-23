@@ -21,6 +21,7 @@ public class DataLoader {
             roleGroupRepository.save(new RoleGroup("ROLE_ADMINISTRATOR"));
             roleGroupRepository.save(new RoleGroup("ROLE_USER"));
             roleGroupRepository.save(new RoleGroup("ROLE_ACCOUNTANT"));
+            roleGroupRepository.save(new RoleGroup("ROLE_AUDITOR"));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

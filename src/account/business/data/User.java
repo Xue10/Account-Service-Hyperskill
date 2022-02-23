@@ -31,6 +31,8 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role = new HashSet<>();
 
+    private boolean isNonLocked = true;
+
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "user_id", nullable = false)
 //    private Set<Salary> salaries = new HashSet<>();
@@ -93,6 +95,13 @@ public class User {
         this.role = role;
     }
 
+    public boolean isNonLocked() {
+        return isNonLocked;
+    }
+
+    public void setNonLocked(boolean nonLocked) {
+        isNonLocked = nonLocked;
+    }
 //    public Set<Salary> getSalaries() {
 //        return salaries;
 //    }

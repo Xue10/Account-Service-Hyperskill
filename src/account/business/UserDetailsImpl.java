@@ -15,6 +15,7 @@ public class UserDetailsImpl implements UserDetails {
     private final String email;
     private final String password;
     private final Set<GrantedAuthority> roles;
+    private final boolean isNonLocked;
 
     public UserDetailsImpl(User user) {
         this.email = user.getEmail();
@@ -25,6 +26,7 @@ public class UserDetailsImpl implements UserDetails {
             userRoles.add(new SimpleGrantedAuthority("ROLE_" + r));
         }
         this.roles = userRoles;
+        this.isNonLocked = user.isNonLocked();
     }
 
     @Override
@@ -49,7 +51,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isNonLocked;
     }
 
     @Override

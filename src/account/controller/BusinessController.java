@@ -44,11 +44,6 @@ public class BusinessController {
 
     @PostMapping("/acct/payments")
     public UploadSuccess upload(@RequestBody @NotEmpty List<Salary> salaryList) {
-//        for (Salary s : salaryList) {
-//            if (s.getSalary() < 0) {
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//            }
-//        }
         return paymentService.upload(salaryList);
     }
 

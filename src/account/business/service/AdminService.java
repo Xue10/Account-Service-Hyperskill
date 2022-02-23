@@ -1,9 +1,11 @@
 package account.business.service;
 
+import account.business.data.LockUnlock;
 import account.business.data.RoleOperation;
 import account.business.data.User;
 import account.business.data.UserRoles;
 import account.business.response.DeleteSuccess;
+import account.business.response.Status;
 import account.repository.RoleGroupRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +79,10 @@ public class AdminService {
             list.add(new UserRoles(user));
         }
         return list;
+    }
+
+    public Status lockUnlock(LockUnlock msg) {
+        User user = findUser(msg.getUser());
     }
 
 

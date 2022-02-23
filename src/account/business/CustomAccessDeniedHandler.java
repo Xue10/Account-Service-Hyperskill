@@ -38,8 +38,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 //                dispatcher.forward(request, response);
 //            }
 //            else {
-                response.sendError(HttpStatus.FORBIDDEN.value(),
-                        "Access Denied!");
+            response.sendError(HttpStatus.FORBIDDEN.value(), "Access Denied!");
 //            }
         }
     }
