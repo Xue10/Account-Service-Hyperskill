@@ -16,7 +16,7 @@ import java.util.List;
 public class AdminController {
 
     @Autowired
-    AdminService adminService;
+    private AdminService adminService;
     
     @PutMapping("/role")
     public UserRoles set(@RequestBody RoleOperation roleOperation) {
@@ -25,7 +25,7 @@ public class AdminController {
 
     @PutMapping("/access")
     public Status lockUnlock(LockUnlock msg) {
-
+        return adminService.lockUnlock(msg);
     }
     
     @DeleteMapping("/{email}")

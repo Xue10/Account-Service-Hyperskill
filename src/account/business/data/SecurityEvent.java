@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 public class SecurityEvent {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue//(strategy = GenerationType.IDENTITY)
     private long id;
 
     private LocalDateTime date;
@@ -27,8 +27,8 @@ public class SecurityEvent {
     public SecurityEvent() {
     }
 
-    public SecurityEvent(LocalDateTime date, String action, String subject, String object, String path) {
-        this.date = date;
+    public SecurityEvent(String action, String subject, String object, String path) {
+        this.date = LocalDateTime.now();
         this.action = action;
         this.subject = subject;
         this.object = object;

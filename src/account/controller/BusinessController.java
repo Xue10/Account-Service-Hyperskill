@@ -23,7 +23,7 @@ import java.util.List;
 public class BusinessController {
 
     @Autowired
-    PaymentService paymentService;
+    private PaymentService paymentService;
 
     @GetMapping(value = "/empl/payment")
     public List<SalaryOut> get(@AuthenticationPrincipal UserDetails details) {

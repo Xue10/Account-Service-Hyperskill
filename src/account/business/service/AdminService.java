@@ -1,19 +1,17 @@
 package account.business.service;
 
-import account.business.data.LockUnlock;
-import account.business.data.RoleOperation;
-import account.business.data.User;
-import account.business.data.UserRoles;
+import account.business.data.*;
 import account.business.response.DeleteSuccess;
 import account.business.response.Status;
 import account.repository.RoleGroupRepository;
+import account.repository.SecurityEventRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -28,11 +26,13 @@ public class AdminService {
 
     private final UserRepository users;
     private final RoleGroupRepository groups;
+    private final SecurityEventRepository events;
 
     @Autowired
-    public AdminService(UserRepository users, RoleGroupRepository groups) {
+    public AdminService(UserRepository users, RoleGroupRepository groups, SecurityEventRepository events) {
         this.users = users;
         this.groups = groups;
+        this.events = events;
     }
 
     public UserRoles changeRoles(RoleOperation roleOperation) {
@@ -48,6 +48,7 @@ public class AdminService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user cannot combine administrative and business roles!");
             }
             roles.add(role);
+            events.save(new SecurityEvent("GRANT_ROLE", Util.getEmail(), "Grant role " + role + " to " + user.getEmail(), "/api/admin/user/role"));
         } else if ("REMOVE".equals(operation)) {
             if (!roles.contains(role)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not have a role!");
@@ -59,6 +60,7 @@ public class AdminService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user must have at least one role!");
             }
             roles.remove(role);
+            events.save(new SecurityEvent("REMOVE_ROLE", Util.getEmail(), "Remove role " + role + " to " + user.getEmail(), "/api/admin/user/role"));
         }
 
         return new UserRoles(user);
@@ -71,6 +73,7 @@ public class AdminService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't remove ADMINISTRATOR role!");
         }
         users.delete(user);
+        events.save(new SecurityEvent("DELETE_USER", Util.getEmail(), email, "/api/admin/user"));
         return new DeleteSuccess(email);
     }
     public List<UserRoles> getAll() {
@@ -83,6 +86,23 @@ public class AdminService {
 
     public Status lockUnlock(LockUnlock msg) {
         User user = findUser(msg.getUser());
+        String operation = msg.getOperation().toUpperCase();
+        if ("LOCK".equals(operation)) {
+            if (user.getRole().contains("ADMINISTRATOR")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't lock the ADMINISTRATOR!");
+            }
+            user.setNonLocked(false);
+            users.save(user);
+            events.save(new SecurityEvent("LOCK_USER", Util.getEmail(), msg.getUser(), "/api/admin/user/access"));
+            return new Status("User " + user.getEmail() + " locked!");
+        } else if ("UNLOCK".equals(operation)) {
+            user.setNonLocked(true);
+            users.save(user);
+            events.save(new SecurityEvent("UNLOCK_USER", Util.getEmail(), msg.getUser(), "/api/admin/user/access"));
+            return new Status("User " + user.getEmail() + " unlocked!");
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

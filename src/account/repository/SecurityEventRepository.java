@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface SecurityEventRepository extends CrudRepository<SecurityEvent, Long> {
+public interface SecurityEventRepository extends CrudRepository<SecurityEvent, Long> {
 }

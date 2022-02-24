@@ -5,10 +5,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table
@@ -31,11 +30,9 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role = new HashSet<>();
 
-    private boolean isNonLocked = true;
+    private int failedAttempt = 0;
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private Set<Salary> salaries = new HashSet<>();
+    private boolean isNonLocked = true;
 
     public User() {
     }
@@ -99,22 +96,16 @@ public class User {
         return isNonLocked;
     }
 
+    public int getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public void setFailedAttempt(int failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
+
     public void setNonLocked(boolean nonLocked) {
         isNonLocked = nonLocked;
     }
-//    public Set<Salary> getSalaries() {
-//        return salaries;
-//    }
-//
-//    public void setSalaries(Set<Salary> salaries) {
-//        this.salaries = salaries;
-//    }
 
-//    public Set<Group> getUserGroups() {
-//        return userGroups;
-//    }
-//
-//    public void setUserGroups(Set<Group> userGroups) {
-//        this.userGroups = userGroups;
-//    }
 }
