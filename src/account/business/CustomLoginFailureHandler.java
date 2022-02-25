@@ -30,7 +30,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-        String email = request.getParameter("email");
+        String email = request.getRemoteUser();
         String path = request.getContextPath();
         Optional<User> userOptional = users.findByEmailIgnoreCase(email);
         User user = userOptional.orElse(null);

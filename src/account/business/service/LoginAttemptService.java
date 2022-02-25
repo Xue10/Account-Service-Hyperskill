@@ -5,28 +5,35 @@ import account.business.data.User;
 import account.repository.SecurityEventRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Optional;
 
+@Service
+@Transactional
+public class LoginAttemptService {
+    private final UserRepository users;
+    private final SecurityEventRepository events;
 
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Autowired
-    private UserRepository users;
-    @Autowired
-    private SecurityEventRepository events;
+    public LoginAttemptService(UserRepository users, SecurityEventRepository events) {
+        this.users = users;
+        this.events = events;
+    }
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
-        String email = request.getParameter("email");
-        String path = request.getContextPath();
+    public void onSuccess(String email) {
+        if (users.existsByEmail(email)) {
+            User user = users.findByEmailIgnoreCase(email).get();
+            if (user.getFailedAttempt() > 0) {
+                user.setFailedAttempt(0);
+                users.save(user);
+            }
+        }
+    }
+
+    public void onFailure(String email, String path) {
+
         Optional<User> userOptional = users.findByEmailIgnoreCase(email);
         User user = userOptional.orElse(null);
 
@@ -44,10 +51,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                     events.save(new SecurityEvent("BRUTE_FORCE", email, path, path));
                     events.save(new SecurityEvent("LOCK_USER", email, "Lock user " + email, path));
                 }
-            } else {
-                authException = new LockedException("Your account has been unlocked. Please try to login again.");
             }
         }
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }
 }
