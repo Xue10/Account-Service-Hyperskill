@@ -6,6 +6,8 @@ import account.business.response.Status;
 import account.repository.RoleGroupRepository;
 import account.repository.SecurityEventRepository;
 import account.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,8 @@ import java.util.Set;
 //@Secured({"ROLE_ADMINISTRATOR"})
 @Transactional
 public class AdminService {
+
+    Logger log = LoggerFactory.getLogger(AdminService.class);
 
     private final UserRepository users;
     private final RoleGroupRepository groups;
@@ -60,7 +64,7 @@ public class AdminService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user must have at least one role!");
             }
             roles.remove(role);
-            events.save(new SecurityEvent("REMOVE_ROLE", Util.getEmail(), "Remove role " + role + " to " + user.getEmail(), "/api/admin/user/role"));
+            events.save(new SecurityEvent("REMOVE_ROLE", Util.getEmail(), "Remove role " + role + " from " + user.getEmail(), "/api/admin/user/role"));
         }
 
         return new UserRoles(user);
@@ -85,7 +89,8 @@ public class AdminService {
     }
 
     public Status lockUnlock(LockUnlock msg) {
-        User user = findUser(msg.getUser());
+        String email = msg.getUser().toLowerCase();
+        User user = findUser(email);
         String operation = msg.getOperation().toUpperCase();
         if ("LOCK".equals(operation)) {
             if (user.getRole().contains("ADMINISTRATOR")) {
@@ -93,12 +98,12 @@ public class AdminService {
             }
             user.setNonLocked(false);
             users.save(user);
-            events.save(new SecurityEvent("LOCK_USER", Util.getEmail(), msg.getUser(), "/api/admin/user/access"));
+            events.save(new SecurityEvent("LOCK_USER", Util.getEmail(), "Lock user " + email, "/api/admin/user/access"));
             return new Status("User " + user.getEmail() + " locked!");
         } else if ("UNLOCK".equals(operation)) {
             user.setNonLocked(true);
             users.save(user);
-            events.save(new SecurityEvent("UNLOCK_USER", Util.getEmail(), msg.getUser(), "/api/admin/user/access"));
+            events.save(new SecurityEvent("UNLOCK_USER", Util.getEmail(), "Unlock user " + email, "/api/admin/user/access"));
             return new Status("User " + user.getEmail() + " unlocked!");
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -107,7 +112,9 @@ public class AdminService {
 
 
     User findUser(String email) {
+        log.info(email);
         Optional<User> found = users.findByEmailIgnoreCase(email);
+        log.info(email);
         if (found.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }

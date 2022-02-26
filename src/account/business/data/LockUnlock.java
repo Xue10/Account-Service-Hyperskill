@@ -12,6 +12,14 @@ public class LockUnlock {
         this.operation = operation;
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
     public String getUser() {
         return user;
     }

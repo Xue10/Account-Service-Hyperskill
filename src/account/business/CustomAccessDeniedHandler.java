@@ -21,11 +21,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         if (!response.isCommitted()) {
-            String path = request.getContextPath();
+            String path = request.getRequestURI();
             String email = Util.getEmail();
             events.save(new SecurityEvent("ACCESS_DENIED", email, path, path));
             response.sendError(HttpStatus.FORBIDDEN.value(), "Access Denied!");
-//            }
         }
     }
 }

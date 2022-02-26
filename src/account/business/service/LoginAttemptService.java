@@ -5,8 +5,10 @@ import account.business.data.User;
 import account.repository.SecurityEventRepository;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -51,6 +53,8 @@ public class LoginAttemptService {
                     events.save(new SecurityEvent("BRUTE_FORCE", email, path, path));
                     events.save(new SecurityEvent("LOCK_USER", email, "Lock user " + email, path));
                 }
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User account is locked");
             }
         } else {
             events.save(new SecurityEvent("LOGIN_FAILED", email, path, path));

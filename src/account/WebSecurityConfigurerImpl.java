@@ -1,9 +1,8 @@
 package account;
 
 import account.business.CustomAccessDeniedHandler;
-//import account.business.service.CustomAuthenticationEntryPoint;
 import account.business.CustomAuthenticationEntryPoint;
-import account.business.service.CustomRememberMeServices;
+import account.business.MyAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,13 +22,11 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
 
     @Autowired
-    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
+    MyAuthenticationEntryPoint myAuthenticationEntryPoint;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
-//                .authenticationEntryPoint(customAuthenticationEntryPoint)
+        http.httpBasic().authenticationEntryPoint(myAuthenticationEntryPoint)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/signup").permitAll()
@@ -39,7 +36,7 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/security/events").hasRole("AUDITOR")
                 .antMatchers("/api/empl/payment").hasAnyRole("USER", "ACCOUNTANT")
                 .and()
-                .csrf().disable().headers().frameOptions().disable().httpStrictTransportSecurity().disable()
+                .csrf().disable().headers().frameOptions().disable()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

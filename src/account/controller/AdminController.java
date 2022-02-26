@@ -24,7 +24,7 @@ public class AdminController {
     }
 
     @PutMapping("/access")
-    public Status lockUnlock(LockUnlock msg) {
+    public Status lockUnlock(@RequestBody LockUnlock msg) {
         return adminService.lockUnlock(msg);
     }
     
