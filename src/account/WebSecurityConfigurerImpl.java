@@ -23,14 +23,13 @@ public class WebSecurityConfigurerImpl extends WebSecurityConfigurerAdapter {
     UserDetailsService userDetailsService;
 
     @Autowired
-    CustomRememberMeServices customRememberMeServices;
-
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+//                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/signup").permitAll()

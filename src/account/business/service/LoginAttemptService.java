@@ -52,6 +52,8 @@ public class LoginAttemptService {
                     events.save(new SecurityEvent("LOCK_USER", email, "Lock user " + email, path));
                 }
             }
+        } else {
+            events.save(new SecurityEvent("LOGIN_FAILED", email, path, path));
         }
     }
 }

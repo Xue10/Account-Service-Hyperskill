@@ -13,7 +13,7 @@ import java.util.TreeSet;
 @Table
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
     @NotEmpty
     private String name;
@@ -27,12 +27,15 @@ public class User {
     @NotEmpty
     @Size(min = 12, message = "Password length must be 12 chars minimum!")
     private String password;
+//    @Column(columnDefinition = "int default 0")
+    private Integer failedAttempt = 0;
+//    @Column(columnDefinition = "boolean default true")
+    private Boolean isNonLocked = true;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> role = new HashSet<>();
 
-    private int failedAttempt = 0;
 
-    private boolean isNonLocked = true;
 
     public User() {
     }
@@ -42,6 +45,8 @@ public class User {
         this.lastname = lastname;
         this.email = email.toLowerCase();
         this.password = password;
+//        this.failedAttempt = 0;
+//        this.isNonLocked = true;
     }
 
     public long getId() {

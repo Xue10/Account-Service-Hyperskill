@@ -52,6 +52,8 @@ public class AuthService {
         } else {
             user.getRole().add("USER");
         }
+        user.setFailedAttempt(0);
+        user.setNonLocked(true);
         users.save(user);
         events.save(new SecurityEvent("CREATE_USER", "Anonymous", user.getEmail(), "/api/auth/signup"));
         return new UserRoles(user);
